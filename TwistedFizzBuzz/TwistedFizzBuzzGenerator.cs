@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Text;
 
 namespace TwistedFizzBuzz
 {
@@ -11,18 +11,16 @@ namespace TwistedFizzBuzz
 
         public static List<string> Generate(int number1, int number2, TwistedFizzBuzzConfiguration configuration)
         {
-            var start = number1 < number2 ? number1 : number2; 
-            var end = number1 < number2 ? number2 : number1;
-            
-            var currentNumber = start;
-            var listSize = end - start;
+            var start = Math.Min(number1, number2); 
+            var end = Math.Max(number1, number2);
+
+            var listSize = end - start + 1;
             var output = new List<string>(listSize);
 
-            while (currentNumber <= end)
+            for (int currentNumber = start; currentNumber <= end; currentNumber++)
             {
                 var token = GetToken(currentNumber, configuration);
                 output.Add(token);
-                currentNumber++;
             }
 
             return output;
@@ -30,18 +28,19 @@ namespace TwistedFizzBuzz
 
         private static string GetToken(int number, TwistedFizzBuzzConfiguration configuration)
         {
-            var output = "";
+            var output = new StringBuilder();
 
             foreach (var multiplier in configuration.Multipliers)
             {
-                output += number.IsMultipleOf(multiplier.Value) 
-                    ? multiplier.Token
-                    : "";
+                if (number.IsMultipleOf(multiplier.Value))
+                {
+                    output.Append(multiplier.Token);
+                }
             }
 
-            return output == "" 
+            return output.Length == 0 
                 ? number.ToString() 
-                : output;
+                : output.ToString();
         }
     }
 }
